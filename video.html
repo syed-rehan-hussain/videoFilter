@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html, body {
+  width:  100%;
+  height: 100%;
+  margin: 0;
+}
+
+:root {
+  --youtube-red: #ffffff;
+}
+.video-progress {
+  position: relative;
+  height: 8.4px;
+  margin-bottom: 10px;
+}
+
+progress {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin-top: 0px;
+  border-radius: 2px;
+  width: 100%;
+  height: 80px;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #ffffff00;
+  border-radius: 2px;
+  //opacity:0.3
+}
+
+progress::-webkit-progress-value {
+  background: var(--youtube-red);
+  border-radius: 2px;
+  opacity:0.5;
+}
+
+progress::-moz-progress-bar {
+  border: 1px solid var(--youtube-red);
+  background: var(--youtube-red);
+}
+
+
+
+
+
+.volumeslider {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  cursor: pointer;
+  margin: 0;
+}
+
+.volumeslider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 80px;
+  background: #d3d3d3;
+  outline: none;
+  //z-index:-99;
+  opacity: 0;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.volumeslider:hover {
+  //opacity: 1;
+}
+
+.volumeslider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #04AA6D;
+  cursor: pointer;
+}
+.volumecontainer{
+width:100%;
+position:relative;
+}
+.explore_area{
+position:absolute;
+}
+
+
+
+//start filter css
+/* Create two equal columns that floats next to each other */
+.columnn {
+  float: left;
+  width: 20%;
+  cursor:pointer;
+  padding: 5px;
+  border:1px solid black;
+  font-size:14px;
+  height: auto; /* Should be removed. Only for demonstration */
+}
+
+.color {
+  float: left;
+  width: 20%;
+  cursor:pointer;
+  text-align:center;
+//  padding: 5px;
+ // border:1px solid black;
+  font-size:14px;
+  height: auto; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.video-container {
+position: relative;
+margin: 0px auto 0;
+}
+
+.video-container .video-filter {
+position: absolute;
+top: 0;
+width: 100%;
+height: 100%;
+z-index: 9999;
+pointer-events: none; /*Unofficial and Won't Validate*/
+background-color: rgba(50,100,200,.5)
+}
+
+
+
+.row .green {
+background-color: #00FF00;
+}
+.row .red {
+background-color: #FF0000;
+}
+.row .blue {
+background-color: #0000FF;
+}
+.row .yellow {
+background-color: #FFFF00;
+}
+.row .clear {
+background-color: #fff;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+border: 1px solid rgba(0,0,0,.1);
+}
+
+.video-container .video-filter-controls span {
+display: block;
+width: 100%;
+height: 20px;
+}
+</style>
+</head>
+<body>
+<div>
+<!--width="540" height="400"-->
+<input style="padding:10px;" type="file" name="file" accept="video/*" class="file_multi_video" /></div>
+<video class="vid" id="video"  autoplay>
+<source src="mov_bbb.mp4" id="videohere" type="video/mp4">
+</video>
+	<div class="volumecontainer" >
+		<canvas width="" class="explore_area" height="80px" id="prevImgCanvas">Your browser does not support the HTML5 canvas tag.</canvas>
+		<progress class="progress-bar" id="progress-bar" value="0" min="0"></progress>
+		<input type="range" min="1" max="" value="0" step="1" class="volumeslider" id="volumeRange">
+	</div>
+	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+$(document).on("change", ".file_multi_video", function(evt) {
+  var $source = $('#videohere');
+  $source[0].src = URL.createObjectURL(this.files[0]);
+  $source.parent()[0].load();
+});
+let x = -1;
+let y = 0;
+var video = document.createElement("video");
+  var widthcan;
+  var widthcancheck;
+var canvas = document.getElementById("prevImgCanvas");
+canvas.width = window.innerWidth - 20;
+
+video.addEventListener('loadeddata', function() {
+	widthcancheck = canvas.width / video.duration;
+	if(widthcancheck > video.duration/4){
+		 widthcan = canvas.width / 1000;
+	}
+	else{
+	widthcan = canvas.width / video.duration;
+	}
+	//widthcan = canvas.width / video.duration;
+	$('.video-container').css({
+		'width':$('.video-container video').width(),
+		'height':$('.video-container video').height()
+	});
+	reloadRandomFrame();
+	var rand = (Math.round(video.duration * 70) + 1) / 1000;
+	$("#volumeRange").attr("max",Math.floor(video.duration));
+	$("#progress-bar").attr("max",Math.floor(video.duration));
+	
+}, false);
+  
+	widthcancheck = canvas.width / video.duration;
+	if(widthcancheck > video.duration){
+		 widthcan = canvas.width / 1000;
+	}
+	else{
+	widthcan = canvas.width / video.duration;
+	}
+	
+video.addEventListener('seeked', function() {
+	x = x+1;
+	var context = canvas.getContext('2d');
+	let frame = (canvas.width * widthcan) / video.duration;
+	y = x * frame;
+	context.drawImage(video, y, 0, frame, 80);
+	reloadRandomFrame();
+	var vid = document.getElementById("video");
+	$("#volumeRange").attr("value",Math.floor(vid.currentTime));
+	$("#progress-bar").attr("value",Math.floor(vid.currentTime));
+	
+}, false);
+
+var playSelectedFile = function(event) {
+	x = -1;
+	y = 0;
+	var file = this.files[0];
+	var fileURL = URL.createObjectURL(file);
+	video.src = fileURL;
+	document.getElementById('filtercolor').style.display = "block";
+
+}
+
+var input = document.querySelector('input');
+	input.addEventListener('change', playSelectedFile, true);
+
+function reloadRandomFrame() {
+	
+  if (!isNaN(video.duration)) {
+    var rand = Math.round(video.duration * 70) + 1;
+    video.currentTime = video.currentTime + widthcan;
+  }
+}
+var vid = document.getElementById("volumeRange");
+function volume(e)
+{
+	var vid = document.getElementById("video");
+	vid.currentTime = $("#volumeRange").val();
+	$("#progress-bar").attr("value",vid.currentTime);
+	$("#volumeRange").attr("value",vid.currentTime);
+}
+vid.addEventListener('input', volume);
+
+
+
+$(document).ready(function(){
+	var vid = document.getElementById("video");
+	$('video').wrap('<div class="video-container"></div>');
+	$('.video-container').append('<div class="video-filter" style="background-color: rgba(255, 255, 255, 0);"></div><br/>')
+	
+	
+	$('.volumecontainer').append('<div style="padding-top:82px; display:none;" id="filtercolor" class="row"><div class="columnn green color" data-color-filter="rgba(0,255,0,.3)" id="green"><h2>green</h2> </div>  <div class="column red color" data-color-filter="rgba(255,0,0,.3)" id="red">    <h2>red</h2>	  </div>  <div class="column blue color" data-color-filter="rgba(0,0,255,.3)" id="blue">    <h2>blue</h2>		 </div>  <div class="column yellow color" data-color-filter="rgba(255,255,0,.3)" id="yellow">    <h2>yellow</h2> </div><div class="column clear color" data-color-filter="rgba(255,255,255,0)"" id="clear">    <h2>clear</h2> </div></div><div class="video-filter" style="background-color: rgba(255, 255, 255, 0);"></div><br/>')
+	
+	
+	$('.row .color').on('click',function(){
+		filter_val = $(this).attr('data-color-filter');
+		$('.video-container .video-filter').css('background-color', filter_val);
+	});
+});
+</script>
+
+</body>
+
+</html>
