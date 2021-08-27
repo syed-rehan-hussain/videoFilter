@@ -47,7 +47,7 @@ progress::-moz-progress-bar {
   background: var(--youtube-red);
 }
 
-//Range Slider Css Start
+/* Range css start */
 .volumeslider {
   position: absolute;
   top: 0;
@@ -79,16 +79,16 @@ progress::-moz-progress-bar {
   cursor: pointer;
 }
 .volumecontainer{
-width:100%;
-position:relative;
+	width:100%;
+	position:relative;
 }
 .explore_area{
-position:absolute;
+	position:absolute;
 }
-//Range Slider Css End
+/* Range css end */
 
+/* filter css start */
 
-//Filter Css Start
 /* Create two equal columns that floats next to each other */
 .columnn {
   float: left;
@@ -105,6 +105,8 @@ position:absolute;
   width: 20%;
   cursor:pointer;
   text-align:center;
+//padding: 5px;
+//border:1px solid black;
   font-size:14px;
   height: auto; /* Should be removed. Only for demonstration */
 }
@@ -117,70 +119,63 @@ position:absolute;
 }
 
 .video-container {
-position: relative;
-margin: 0px auto 0;
+	position: relative;
+	margin: 0px auto 0;
 }
 
 .video-container .video-filter {
-position: absolute;
-top: 0;
-width: 100%;
-height: 100%;
-z-index: 9999;
-pointer-events: none; /*Unofficial and Won't Validate*/
-background-color: rgba(50,100,200,.5)
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	pointer-events: none; /*Unofficial and Won't Validate*/
+	background-color: rgba(50,100,200,.5)
 }
 
 .row .green {
-background-color: #00FF00;
+	background-color: #00FF00;
 }
 .row .red {
-background-color: #FF0000;
+	background-color: #FF0000;
 }
 .row .blue {
-background-color: #0000FF;
+	background-color: #0000FF;
 }
 .row .yellow {
-background-color: #FFFF00;
+	background-color: #FFFF00;
 }
 .row .clear {
-background-color: #fff;
--webkit-box-sizing: border-box;
--moz-box-sizing: border-box;
-box-sizing: border-box;
-border: 1px solid rgba(0,0,0,.1);
+	background-color: #fff;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	border: 1px solid rgba(0,0,0,.1);
 }
 
 .video-container .video-filter-controls span {
-display: block;
-width: 100%;
-height: 20px;
+	display: block;
+	width: 100%;
+	height: 20px;
 }
-//Filter Css End
-	
+
+/* filter css start */
 </style>
 </head>
 <body>
-<!--- Input Button Start -->
 <div>
-<input style="padding:10px;" type="file" name="file" accept="video/*" class="file_multi_video" />
-</div>
-<!--- Input Button End -->
-<!--- Displaying Video Start -->
+<!--width="540" height="400"-->
+<input style="padding:10px;" type="file" name="file" accept="video/*" class="file_multi_video" /></div>
 <video class="vid" id="video"  autoplay>
-	<source src="mov_bbb.mp4" id="videohere" type="video/mp4">
+<source src="mov_bbb.mp4" id="videohere" type="video/mp4">
 </video>
-<!--- Displaying Video End -->
-	
-<!--- Range Slider,Canvas Frames ,Progress Bar  -->
-<div class="volumecontainer" >
-	<canvas width="" class="explore_area" height="80px" id="prevImgCanvas">Your browser does not support the HTML5 canvas tag.</canvas>
-	<progress class="progress-bar" id="progress-bar" value="0" min="0"></progress>
-	<input type="range" min="1" max="" value="0" step="1" class="volumeslider" id="volumeRange">
-</div>
+	<div class="volumecontainer" >
+		<canvas width="" class="explore_area" height="80px" id="prevImgCanvas">Your browser does not support the HTML5 canvas tag.</canvas>
+		<progress class="progress-bar" id="progress-bar" value="0" min="0"></progress>
+		<input type="range" min="1" max="" value="0" step="1" class="volumeslider" id="volumeRange">
+	</div>
 	
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
 <script>
 $(document).on("change", ".file_multi_video", function(evt) {
   var $source = $('#videohere');
@@ -203,6 +198,7 @@ video.addEventListener('loadeddata', function() {
 	else{
 	widthcan = canvas.width / video.duration;
 	}
+	//widthcan = canvas.width / video.duration;
 	$('.video-container').css({
 		'width':$('.video-container video').width(),
 		'height':$('.video-container video').height()
@@ -213,7 +209,7 @@ video.addEventListener('loadeddata', function() {
 	$("#progress-bar").attr("max",Math.floor(video.duration));
 	
 }, false);
-	
+  
 	widthcancheck = canvas.width / video.duration;
 	if(widthcancheck > video.duration){
 		 widthcan = canvas.width / 1000;
@@ -235,7 +231,6 @@ video.addEventListener('seeked', function() {
 	
 }, false);
 
-
 var playSelectedFile = function(event) {
 	x = -1;
 	y = 0;
@@ -243,17 +238,19 @@ var playSelectedFile = function(event) {
 	var fileURL = URL.createObjectURL(file);
 	video.src = fileURL;
 	document.getElementById('filtercolor').style.display = "block";
+
 }
+
 var input = document.querySelector('input');
 	input.addEventListener('change', playSelectedFile, true);
 
 function reloadRandomFrame() {
+	
   if (!isNaN(video.duration)) {
     var rand = Math.round(video.duration * 70) + 1;
     video.currentTime = video.currentTime + widthcan;
   }
 }
-	
 var vid = document.getElementById("volumeRange");
 function volume(e)
 {
@@ -264,17 +261,24 @@ function volume(e)
 }
 vid.addEventListener('input', volume);
 
+
+
 $(document).ready(function(){
 	var vid = document.getElementById("video");
 	$('video').wrap('<div class="video-container"></div>');
 	$('.video-container').append('<div class="video-filter" style="background-color: rgba(255, 255, 255, 0);"></div><br/>')
+	
+	
 	$('.volumecontainer').append('<div style="padding-top:82px; display:none;" id="filtercolor" class="row"><div class="columnn green color" data-color-filter="rgba(0,255,0,.3)" id="green"><h2>green</h2> </div>  <div class="column red color" data-color-filter="rgba(255,0,0,.3)" id="red">    <h2>red</h2>	  </div>  <div class="column blue color" data-color-filter="rgba(0,0,255,.3)" id="blue">    <h2>blue</h2>		 </div>  <div class="column yellow color" data-color-filter="rgba(255,255,0,.3)" id="yellow">    <h2>yellow</h2> </div><div class="column clear color" data-color-filter="rgba(255,255,255,0)"" id="clear">    <h2>clear</h2> </div></div><div class="video-filter" style="background-color: rgba(255, 255, 255, 0);"></div><br/>')
+	
+	
 	$('.row .color').on('click',function(){
 		filter_val = $(this).attr('data-color-filter');
 		$('.video-container .video-filter').css('background-color', filter_val);
 	});
 });
 </script>
+
 </body>
 
 </html>
